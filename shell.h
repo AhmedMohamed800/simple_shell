@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-extern char **environ;
+#include <sys/stat.h>
+
+void give_input(char **line, size_t *line_len, ssize_t *nread,
+		struct stat st, char *message);
+void run_pro(char **line, size_t *line_len, int *id, int *wstatus);
+size_t size_of(char *str);
 
 #endif

@@ -2,32 +2,25 @@
 
 /**
 * main - simple shell
+* @argc: number of arguments
+* @argv: arguments
 * Return: 0
 */
-int main(void)
+int main(int argc, char **argv)
 {
 	char *line = NULL;
+	struct stat st;
 	size_t line_len = 0;
-	int id;
-	int *wstatus;
+	int id, wstatus;
 	ssize_t nread;
-	char *argVec[] = {NULL};
-	char *envVec[] = {NULL};
 
 	while (1)
 	{
-		write(STDOUT_FILENO, "#cisfun$", 9);
-		nread = getline(&line, &line_len, stdin);
-		line[nread - 1] = '\0';
+		give_input(&line, &line_len, &nread, st, argv[0]);
+		if (stat(line, &st) != 0)
+			continue;
 		id = fork();
-		if (id == 0)
-		{
-			execve(line, argVec, envVec);
-		}
-		else
-		{
-			wait(wstatus);
-			free(line);
-		}
+		run_pro(&line, &line_len, &id, &wstatus);
 	}
+	return (0);
 }
