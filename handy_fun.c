@@ -35,11 +35,7 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 	}
 	*nread = getline(line, line_len, stdin);
 	if (*nread == EOF)
-<<<<<<< HEAD
-		write(STDOUT_FILENO,"\n", 1), exit(1);
-=======
 		write(STDOUT_FILENO,"\n",1), exit(1);
->>>>>>> 1ed31a6749dde81c1a713250ae183ea9aea43236
 	else if (*nread == -1)
 		perror("Error1"), exit(69);
 	(*line)[*nread - 1] = '\0';
