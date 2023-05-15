@@ -35,9 +35,9 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 	}
 	*nread = getline(line, line_len, stdin);
 	if (*nread == EOF)
-		write(STDOUT_FILENO,"\n",2), exit(1);
+		write(STDOUT_FILENO,"\n", 1), exit(1);
 	else if (*nread == -1)
-		perror("Error1"),exit(69);
+		perror("Error1"), exit(69);
 	(*line)[*nread - 1] = '\0';
 	if (stat(*line, &st) != 0)
 	{
@@ -49,10 +49,10 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 		}
 		else
 		{
-			write(STDERR_FILENO, ": 1: ", 6);
+			write(STDERR_FILENO, ": 1:", 5);
 			write(STDERR_FILENO, *line, size_of(*line));
-			write(STDERR_FILENO, ": ", 2);
-			write(STDERR_FILENO, "not found\n", 11);
+			write(STDERR_FILENO, ":", 2);
+			write(STDERR_FILENO, "not found\n", 10);
 			exit (99);
 		}
 	}
@@ -77,8 +77,8 @@ void run_pro(char **argv, char **line, size_t *line_len, int *id, int *wstatus)
 		if (execve(*line, argVec, envVec) == -1)
 		{
 			write(STDERR_FILENO, *argv, size_of(*argv));
-			write(STDERR_FILENO,": 1: ", 6);
-			perror(*line), exit(99); // non interactive
+			write(STDERR_FILENO,": 1:", 5);
+			perror(*line), exit(99);
 		}
 	}
 	else
