@@ -34,8 +34,10 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 			perror("Error2"), exit(99);
 	}
 	*nread = getline(line, line_len, stdin);
-	if (*nread == -1)
-		perror("Error1"), exit(98);
+	if (*nread == EOF)
+		write(STDOUT_FILENO,"\n",2), exit(1);
+	else if (*nread == -1)
+		perror("Error1"),exit(69);
 	(*line)[*nread - 1] = '\0';
 	if (stat(*line, &st) != 0)
 	{
@@ -89,3 +91,4 @@ void run_pro(char **argv, char **line, size_t *line_len, int *id, int *wstatus)
 			exit (10);	
 	}
 }
+
