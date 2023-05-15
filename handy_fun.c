@@ -35,7 +35,7 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 	}
 	*nread = getline(line, line_len, stdin);
 	if (*nread == EOF)
-		write(STDOUT_FILENO,"\n",2), exit(1);
+		write(STDOUT_FILENO,"\n",1), exit(1);
 	else if (*nread == -1)
 		perror("Error1"),exit(69);
 	(*line)[*nread - 1] = '\0';
