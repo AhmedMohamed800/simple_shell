@@ -27,7 +27,9 @@ char *give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 		char *message)
 {
 	size_t size_of_message = size_of(message);
+	char **argVec, *d = {" "};
 
+	argVec = malloc(sizeof(char *));
 	if (isatty(STDIN_FILENO)) // fix non interactive
 	{	
 		if (write(STDOUT_FILENO, "#cisfun$ ", 9) == -1)
@@ -39,7 +41,8 @@ char *give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 	else if (*nread == -1)
 		perror("Error1"),exit(69);
 	(*line)[*nread - 1] = '\0';
-	if (stat(*line, &st) != 0)
+	*argVec = strtok(*line, d);
+	if (stat(*argVec, &st) != 0)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO)) // fix non interactve
@@ -74,7 +77,7 @@ void run_pro(char **argv, char **line, size_t *line_len, int *id, int *wstatus)
 	
 	words = count_words(*line);
 	argVec = malloc(sizeof(char *) * words);
-	argVec[0] = strtok(*line, d);
+	argVec[0] = *line;
 	for (i = 1; i < words; i++)
 		argVec[i] = strtok(NULL, d);
 	if (*id == -1)
