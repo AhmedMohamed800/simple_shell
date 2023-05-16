@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		give_input(&line, &line_len, &nread, st, argv[0]);
+		line = give_input(&line, &line_len, &nread, st, argv[0]);
 		if (stat(line, &st) != 0)
 			continue;
 		id = fork();

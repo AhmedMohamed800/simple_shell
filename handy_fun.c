@@ -23,7 +23,7 @@ size_t size_of(char *str)
 * @message: the argv[0] ./example
 * Return: nothing
 */
-void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
+char *give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 		char *message)
 {
 	size_t size_of_message = size_of(message);
@@ -56,6 +56,7 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 			exit (99);
 		}
 	}
+	return(*line);
 }
 
 /**
@@ -68,13 +69,19 @@ void give_input(char **line, size_t *line_len, ssize_t *nread, struct stat st,
 */
 void run_pro(char **argv, char **line, size_t *line_len, int *id, int *wstatus)
 {
-	char *argVec[] = {NULL}, *envVec[] = {NULL};
-
+	char **argVec, *envVec[] = {NULL}, *d = {" "};
+	int words, i;
+	
+	words = count_words(*line);
+	argVec = malloc(sizeof(char *) * words);
+	argVec[0] = strtok(*line, d);
+	for (i = 1; i < words; i++)
+		argVec[i] = strtok(NULL, d);
 	if (*id == -1)
 		perror("Error11"), exit(97);
 	if (*id == 0)
 	{
-		if (execve(*line, argVec, envVec) == -1)
+		if (execve(argVec[0], argVec, envVec) == -1)
 		{
 			write(STDERR_FILENO, *argv, size_of(*argv));
 			write(STDERR_FILENO,": 1: ", 6);
