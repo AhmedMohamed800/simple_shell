@@ -79,7 +79,7 @@ void run_pro(char **argv, char **line, size_t *line_len, int *id, int *wstatus)
 	argVec = malloc(sizeof(char *) * words);
 	argVec[0] = *line;
 	for (i = 1; i < words; i++)
-		argVec[i] = strtok(NULL, d);
+		argVec[i] = strtok(NULL, d), write(STDOUT_FILENO,"here\n",6);
 	if (*id == -1)
 		perror("Error11"), exit(97);
 	if (*id == 0)
