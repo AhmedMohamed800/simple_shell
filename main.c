@@ -6,7 +6,7 @@
 * @argv: arguments
 * Return: 0
 */
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
 	char *line = NULL;
 	char **argVec;
@@ -15,9 +15,12 @@ int main(int argc, char **argv)
 	int id, wstatus;
 	ssize_t nread;
 	(void) argc;
+	char *c;
 
 	while (1)
 	{
+		c = get_env("PATH",env);
+		printf("%s\n", c);
 		argVec = give_input(&line, &line_len, &nread, &st, argv[0]);
 		if (stat(argVec[0], &st) != 0)
 			continue;

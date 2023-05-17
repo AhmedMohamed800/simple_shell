@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <string.h>
 
+char *get_env(char *c, char **env);
 char **give_input(char **line, size_t *line_len, ssize_t *nread,
 		struct stat *st, char *message);
 void run_pro(char **argv, char **argVec, int *id, int *wstatus);

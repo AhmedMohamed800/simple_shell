@@ -106,3 +106,41 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 	}
 }
 
+/**
+ * get_env - get env variavle
+ * @c: variable we want to get
+ *
+ * Return: pointer to the variable
+ */ 
+char *get_env(char *c, char **env)
+{
+	int i = size_of(c, 1), j = 0;
+	char *ptr;
+
+	while(*env)
+	{
+		if (**env == *c)
+		{
+			ptr = *env;
+			while (*ptr == *c)
+			{
+				j++;
+				ptr++;
+				c++;
+				if (j == i)
+				{
+					ptr++;
+					printf("%s\n", ptr);
+					return ("a");
+				}
+				else
+				{
+					j = 0;
+					break;
+				}
+			}
+		}
+	env++;
+	}
+}
+
