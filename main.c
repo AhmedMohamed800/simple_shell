@@ -14,15 +14,19 @@ int main(int argc, char **argv)
 	size_t line_len = 0;
 	int id, wstatus;
 	ssize_t nread;
-	int d = 0;
+	(void) argc;
 
 	while (1)
 	{
-		argVec = give_input(&line, &line_len, &nread, st, argv[0]);
+		argVec = give_input(&line, &line_len, &nread, &st, argv[0]);
 		if (stat(argVec[0], &st) != 0)
 			continue;
 		id = fork();
 		run_pro(argv, argVec, &id, &wstatus);
+		free(line);
+		line = NULL;
+		line_len = 0;
+		_free_array(argVec);
 	}
 	return (0);
 }

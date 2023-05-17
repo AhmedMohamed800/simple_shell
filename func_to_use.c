@@ -3,23 +3,29 @@
 /**
 * size_of - gives the value of a string
 * @str: string to be misured
+* @spaces: 0 if str length and 1 if spaces length
 * Return: size of a string
 */
 size_t size_of(char *str, size_t spaces)
 {
 	size_t i = 0;
+
 	if (spaces == 0)
 	{
 		while (*str++)
-			 i++;
+		{
+			i++;
+		}
 	}
 	else
 	{
 		while (*str)
 		{
-			 if (*str == ' ')
-				 i++;
-			 str++;
+			if (*str == ' ')
+			{
+				i++;
+			}
+			str++;
 		}
 		i += 2;
 	}
@@ -32,16 +38,11 @@ size_t size_of(char *str, size_t spaces)
 * @src: string to be copied
 * Return: the pointer to dest
 */
-char *_strcpy(char *dest, char *src)
+char *_strcpy(char *dest, const char *src)
 {
-	int len, i;
+	int i;
 
-	len = 0;
-	while (src[len] != '\0')
-	{
-		len++;
-	}
-	for (i = 0; i < len; i++)
+	for (i = 0; src[i]; i++)
 	{
 		dest[i] = src[i];
 	}
@@ -56,10 +57,13 @@ char *_strcpy(char *dest, char *src)
 */
 void _free_array(char **arr)
 {
-	while (*arr)
+	int i;
+
+	if (arr == NULL)
+		return;
+	for (i = 0; arr[i] != NULL; i++)
 	{
-		free(*arr);
-		arr++;
+		free(arr[i]);
 	}
 	free(arr);
 }
