@@ -1,27 +1,71 @@
 #include "shell.h"
 
 /**
+* @handle_path - handle the path
+* @line: asd
+*
+*/
+int handle_path(char **envp, char *final_path, char *argVec_first, char **paths_arr)
+{
+	char *ptr;
+	int bol_l = 0, i = 0, size_of_first = size_of(argVec_first, 0);
+	int size_of_path, j = 0;
+	struct stat *st;
+	
+	while (paths_arr[i] != NULL)
+	{
+		size_of_path = size_of(paths_arr[i], 0);
+		final_path = malloc(size_of_first + size_of_path + 2);
+		if (final_path == NULL)
+			perror("Error"), exit(98);
+		ptr = paths_arr[i];
+		for(j = 0; ptr[j]; j++)
+		{
+			final_path[j] = ptr[j];
+		}
+		_strcpy(final_path, argVec_first);
+		if (stat(final_path, st) != 0)
+		{
+			bol_l = 1;
+			break;
+		}
+		i++;
+		free(final_path);
+		final_path = NULL;
+	}
+	return (bol_l);
+}
+
+/**
 * _str - Handle command lines with arguments
 * @arr: array of strings
 * @line: line to be diveded
+* @check: 0 for spaces and else for :
 * Return: array of string
-*/
-char **_str(char **arr, char *line)
+*/ 
+char **_str(char **arr, char *line, const char *delim, int check)
 {
 	char *token;
 	int i = 0;
-
-	arr = malloc(sizeof(char *) * size_of(line, 1));
+	
+	if (check == 0)
+	{
+		arr = malloc(sizeof(char *) * size_of(line, 1));
+	}
+	else
+	{
+		arr = malloc(sizeof(char *) * size_of(line, 2));
+	}
 	if (arr == NULL)
-		perror("Error"), exit(90);
-	token = strtok(line, " ");
+		perror("Error11"), exit(90);
+	token = strtok(line, delim);
 	while (token != NULL)
 	{
 		arr[i] = malloc(size_of(token, 0) + 1);
 		if (arr[i] == NULL)
-			perror("Error"), exit(90);
+			perror("Error2"), exit(90);
 		_strcpy(arr[i], token);
-		token = strtok(NULL, " ");
+		token = strtok(NULL, delim);
 		i++;
 	}
 	arr[i] = NULL;
@@ -38,10 +82,12 @@ char **_str(char **arr, char *line)
 * Return: nothing
 */
 char **give_input(char **line, size_t *line_len, ssize_t *nread,
-		struct stat *st, char *message)
+		char *message, char **envp, 
+		char *final_path, int *bol_main, char **paths)
 {
 	size_t size_of_message = size_of(message, 0);
-	char **argVec;
+	char **argVec = NULL;
+	struct stat *st;
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -54,8 +100,9 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 	else if (*nread == -1)
 		perror("Error"), exit(69);
 	(*line)[*nread - 1] = '\0';
-	argVec = _str(argVec, *line);
-	if (stat(argVec[0], st) != 0)
+	argVec = _str(argVec, *line, " ", 0);
+	*bol_main = handle_path(envp, final_path, argVec[0], paths);
+	if (stat(argVec[0], st) != 0 && bol_main)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO))
@@ -83,7 +130,8 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 * @argVec: arguments to pass in execve
 * Return: nothing
 */
-void run_pro(char **argv, char **argVec, int *id, int *wstatus)
+void run_pro(char **argv, char **argVec, int *id,
+		int *wstatus, int *bol_main, char *final_path)
 {
 	char *envVec[] = {NULL};
 
@@ -91,11 +139,23 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 		perror("Error"), exit(97);
 	if (*id == 0)
 	{
-		if (execve(argVec[0], argVec, envVec) == -1)
+		if (*bol_main == 1)
 		{
-			write(STDERR_FILENO, argv, size_of(*argv, 0));
-			write(STDERR_FILENO, ": 1: ", 6);
-			perror(argVec[0]), exit(99);
+			if (execve(final_path, argVec, envVec) == -1)
+			{
+				write(STDERR_FILENO, argv, size_of(*argv, 0));
+				write(STDERR_FILENO, ": 1: ", 6);
+				perror(argVec[0]), exit(99);
+			}
+		}
+		else
+		{
+			if (execve(argVec[0], argVec, envVec) == -1)
+			{
+				write(STDERR_FILENO, argv, size_of(*argv, 0));
+				write(STDERR_FILENO, ": 1: ", 6);
+				perror(argVec[0]), exit(99);
+			}
 		}
 	}
 	else
@@ -105,42 +165,3 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 			exit(10);
 	}
 }
-
-/**
- * get_env - get env variavle
- * @c: variable we want to get
- *
- * Return: pointer to the variable
- */ 
-char *get_env(char *c, char **env)
-{
-	int i = size_of(c, 1), j = 0;
-	char *ptr;
-
-	while(*env)
-	{
-		if (**env == *c)
-		{
-			ptr = *env;
-			while (*ptr == *c)
-			{
-				j++;
-				ptr++;
-				c++;
-				if (j == i)
-				{
-					ptr++;
-					printf("%s\n", ptr);
-					return ("a");
-				}
-				else
-				{
-					j = 0;
-					break;
-				}
-			}
-		}
-	env++;
-	}
-}
-
