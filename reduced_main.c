@@ -5,13 +5,17 @@
 * @line: asd
 *
 */
-int handle_path(char **envp, char *final_path, char *argVec_first, char **paths_arr)
+int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 {
 	char *ptr;
-	int bol_l = 0, i = 0, size_of_first = size_of(argVec_first, 0);
-	int size_of_path, j = 0;
-	struct stat *st;
+	int bol_l = 1, i = 0;
+	size_t size_of_first = size_of(argVec_first, 0);
+	int size_of_path, j = 0, g = 0;
+	struct stat st;
+	char *final_path = NULL;
 	
+	if (argVec_first[0] == '/')
+		return (1);
 	while (paths_arr[i] != NULL)
 	{
 		size_of_path = size_of(paths_arr[i], 0);
@@ -23,16 +27,23 @@ int handle_path(char **envp, char *final_path, char *argVec_first, char **paths_
 		{
 			final_path[j] = ptr[j];
 		}
-		_strcpy(final_path, argVec_first);
-		if (stat(final_path, st) != 0)
+		final_path[j] = '/';
+		j += 1;
+		for (g = 0; argVec_first[g]; g++)
 		{
-			bol_l = 1;
+			final_path[j] = argVec_first[g];
+			j++;
+		}
+		final_path[j] = '\0';
+		if (stat(final_path, &st) == 0)
+		{
+			bol_l = 0;
 			break;
 		}
 		i++;
 		free(final_path);
-		final_path = NULL;
 	}
+	*path_index = i;
 	return (bol_l);
 }
 
@@ -50,11 +61,11 @@ char **_str(char **arr, char *line, const char *delim, int check)
 	
 	if (check == 0)
 	{
-		arr = malloc(sizeof(char *) * size_of(line, 1));
+		arr = malloc(sizeof(char *) * size_of(line, 1) + 1);
 	}
 	else
 	{
-		arr = malloc(sizeof(char *) * size_of(line, 2));
+		arr = malloc(sizeof(char *) * size_of(line, 2) + 1);
 	}
 	if (arr == NULL)
 		perror("Error11"), exit(90);
@@ -82,12 +93,11 @@ char **_str(char **arr, char *line, const char *delim, int check)
 * Return: nothing
 */
 char **give_input(char **line, size_t *line_len, ssize_t *nread,
-		char *message, char **envp, 
-		char *final_path, int *bol_main, char **paths)
+		char *message, int *bol_main, char **paths, int *path_index)
 {
 	size_t size_of_message = size_of(message, 0);
 	char **argVec = NULL;
-	struct stat *st;
+	struct stat *st = NULL;	
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -95,14 +105,16 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 			perror("Error"), exit(99);
 	}
 	*nread = getline(line, line_len, stdin);
+	if (*nread == 1)
+		return (NULL);
 	if (*nread == EOF)
 		write(STDOUT_FILENO, "\n", 1), exit(1);
 	else if (*nread == -1)
 		perror("Error"), exit(69);
 	(*line)[*nread - 1] = '\0';
 	argVec = _str(argVec, *line, " ", 0);
-	*bol_main = handle_path(envp, final_path, argVec[0], paths);
-	if (stat(argVec[0], st) != 0 && bol_main)
+	*bol_main = handle_path(argVec[0], paths, path_index);
+	if (stat(argVec[0], st) != 0 && *bol_main)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO))
@@ -131,7 +143,7 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 * Return: nothing
 */
 void run_pro(char **argv, char **argVec, int *id,
-		int *wstatus, int *bol_main, char *final_path)
+		int *wstatus, int *bol_main)
 {
 	char *envVec[] = {NULL};
 
@@ -139,23 +151,11 @@ void run_pro(char **argv, char **argVec, int *id,
 		perror("Error"), exit(97);
 	if (*id == 0)
 	{
-		if (*bol_main == 1)
+		if (execve(argVec[0], argVec, envVec) == -1)
 		{
-			if (execve(final_path, argVec, envVec) == -1)
-			{
-				write(STDERR_FILENO, argv, size_of(*argv, 0));
-				write(STDERR_FILENO, ": 1: ", 6);
-				perror(argVec[0]), exit(99);
-			}
-		}
-		else
-		{
-			if (execve(argVec[0], argVec, envVec) == -1)
-			{
-				write(STDERR_FILENO, argv, size_of(*argv, 0));
-				write(STDERR_FILENO, ": 1: ", 6);
-				perror(argVec[0]), exit(99);
-			}
+			write(STDERR_FILENO, argv, size_of(*argv, 0));
+			write(STDERR_FILENO, ": 1: ", 6);
+			perror(argVec[0]), exit(99);
 		}
 	}
 	else
