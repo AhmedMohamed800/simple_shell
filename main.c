@@ -22,7 +22,7 @@ int main(int argc, char **argv, char **envp)
 	(void) argc;
 	while (1)
 	{
-		argVec = give_input(&line, &line_len, &nread,
+		argVec = give_input(envp, &line, &line_len, &nread,
 				argv[0], ptr_bol_l, paths_arr, &path_index);
 		if (nread == 1)
 			continue;

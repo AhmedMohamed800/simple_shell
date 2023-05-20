@@ -30,3 +30,4 @@ char *final_path(char **paths_arr, int index, char *first_argvec)
 	final_path[i] = '\0';
 	return (final_path);
 }
+

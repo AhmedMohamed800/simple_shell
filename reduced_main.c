@@ -97,7 +97,7 @@ char **_str(char **arr, char *line, const char *delim, int check)
 * @path_index: the index of choosend path
 * Return: nothing
 */
-char **give_input(char **line, size_t *line_len, ssize_t *nread,
+char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		char *message, int *bol_main, char **paths, int *path_index)
 {
 	size_t size_of_message = size_of(message, 0);
@@ -110,13 +110,25 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 			perror("Error"), exit(99);
 	}
 	*nread = getline(line, line_len, stdin);
-	if (*nread == 1)
-		return (NULL);
-	if (*nread == EOF)
-		write(STDOUT_FILENO, "\n", 1), exit(1);
-	else if (*nread == -1)
-		perror("Error"), exit(69);
 	(*line)[*nread - 1] = '\0';
+	if (*nread == EOF)
+                write(STDOUT_FILENO, "\n", 1), exit(1);
+        else if (*nread == -1)
+                perror("Error"), exit(69);
+        if (!_strcp(*line, "exit"))
+                        exit(99);
+        if (!_strcp(*line, "env"))
+        {
+                while (*envp)
+                {
+                        write(STDOUT_FILENO, *envp, size_of(*envp, 0));
+                        envp++;
+                        write(STDOUT_FILENO, "\n", 1);
+                }
+                *nread = 1;
+        }
+	if (*nread == 1)
+               return (NULL);
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
 	if (stat(argVec[0], &st) != 0 && *bol_main == 1)
@@ -168,4 +180,29 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 		if (!isatty(STDIN_FILENO))
 			exit(10);
 	}
+}
+
+/**
+ * _strcmp - compare 2 strings
+ * @a: first strign
+ * @b: sec string
+ *
+ * Return: 0 if they are the same otherwise 1
+ */
+int _strcp(char *a, char *b)
+{
+	int size_a, size_b;
+	
+	size_a = size_of(a, 0);
+	size_b = size_of(b, 0);
+	if (size_a != size_b)
+		return (1);
+	while(*a)
+	{
+		if (*a != *b)
+			return (1);
+		a++;
+		b++;
+	}
+	return (0);
 }
