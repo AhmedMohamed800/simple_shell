@@ -4,6 +4,7 @@
 * main - simple shell
 * @argc: number of arguments
 * @argv: arguments
+* @envp: array of variables
 * Return: 0
 */
 int main(int argc, char **argv, char **envp)
@@ -27,14 +28,16 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		if (stat(argVec[0], &st) != 0 && *ptr_bol_l)
 			continue;
-		if (*ptr_bol_l != 1 && stat(argVec[0], &st) != 0)
+		if (!(*ptr_bol_l == 1) && stat(argVec[0], &st) == 0)
 			argVec[0] = final_path(paths_arr, path_index, argVec[0]);
 		id = fork();
-		run_pro(argv, argVec, &id, &wstatus, ptr_bol_l);
+		run_pro(argv, argVec, &id, &wstatus);
 		free(line);
 		line = NULL;
 		line_len = 0;
 		_free_array(argVec);
 	}
+	free(paths_arr);
+	free(paths);
 	return (0);
 }

@@ -19,7 +19,7 @@ int _strcmp(char *s1, char *s2)
 }
 
 /**
-* get_env - gets the value of an environment variable 
+* get_env - gets the value of an environment variable
 * @identi: the identifier of the vairable
 * @envp: the environments array
 * Return: a string tha contains the value of an ev.
@@ -35,7 +35,7 @@ char *get_env(char *identi, char **envp)
 		if (_strcmp(identi, envp[n]) == 0)
 		{
 			env_var = envp[n];
-			env_size = size_of (env_var, 0) + 1;
+			env_size = size_of(env_var, 0) + 1;
 			for (i = 0; i < env_size; i++)
 			{
 				if (env_var[i] == '=')
@@ -49,7 +49,7 @@ char *get_env(char *identi, char **envp)
 						return (NULL);
 					}
 					_strcpy(final, value);
-					return final;
+					return (final);
 				}
 			}
 		}

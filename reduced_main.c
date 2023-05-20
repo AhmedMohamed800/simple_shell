@@ -1,9 +1,11 @@
 #include "shell.h"
 
 /**
-* @handle_path - handle the path
-* @line: asd
-*
+* handle_path - handle the path
+* @argVec_first: the first element of argVec array
+* @paths_arr: array of paths
+* @path_index: the index of the path in which there is our path
+* Return: 0 if it's found and 1 if it's not found
 */
 int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 {
@@ -13,8 +15,8 @@ int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 	int size_of_path, j = 0, g = 0;
 	struct stat st;
 	char *final_path = NULL;
-	
-	if (argVec_first[0] == '/')
+
+	if (argVec_first[0] == '/' || argVec_first[0] == '.')
 		return (1);
 	while (paths_arr[i] != NULL)
 	{
@@ -23,7 +25,7 @@ int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 		if (final_path == NULL)
 			perror("Error"), exit(98);
 		ptr = paths_arr[i];
-		for(j = 0; ptr[j]; j++)
+		for (j = 0; ptr[j]; j++)
 		{
 			final_path[j] = ptr[j];
 		}
@@ -51,30 +53,31 @@ int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 * _str - Handle command lines with arguments
 * @arr: array of strings
 * @line: line to be diveded
+* @delim: delimater
 * @check: 0 for spaces and else for :
 * Return: array of string
-*/ 
+*/
 char **_str(char **arr, char *line, const char *delim, int check)
 {
 	char *token;
 	int i = 0;
-	
+
 	if (check == 0)
 	{
-		arr = malloc(sizeof(char *) * size_of(line, 1) + 1);
+		arr = malloc(sizeof(char *) * size_of(line, 1));
 	}
 	else
 	{
-		arr = malloc(sizeof(char *) * size_of(line, 2) + 1);
+		arr = malloc(sizeof(char *) * size_of(line, 2));
 	}
 	if (arr == NULL)
-		perror("Error11"), exit(90);
+		perror("Error"), exit(90);
 	token = strtok(line, delim);
 	while (token != NULL)
 	{
 		arr[i] = malloc(size_of(token, 0) + 1);
 		if (arr[i] == NULL)
-			perror("Error2"), exit(90);
+			perror("Error"), exit(90);
 		_strcpy(arr[i], token);
 		token = strtok(NULL, delim);
 		i++;
@@ -88,8 +91,10 @@ char **_str(char **arr, char *line, const char *delim, int check)
 * @line: enterd input
 * @line_len: line's length
 * @nread: read the value of line
-* @st: struct for stat
 * @message: the argv[0] ./example
+* @bol_main: to determine whether the path is found or not
+* @paths: arr of paths
+* @path_index: the index of choosend path
 * Return: nothing
 */
 char **give_input(char **line, size_t *line_len, ssize_t *nread,
@@ -97,7 +102,7 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 {
 	size_t size_of_message = size_of(message, 0);
 	char **argVec = NULL;
-	struct stat *st = NULL;	
+	struct stat st;
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -114,7 +119,7 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 	(*line)[*nread - 1] = '\0';
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
-	if (stat(argVec[0], st) != 0 && *bol_main)
+	if (stat(argVec[0], &st) != 0 && *bol_main == 1)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO))
@@ -142,8 +147,7 @@ char **give_input(char **line, size_t *line_len, ssize_t *nread,
 * @argVec: arguments to pass in execve
 * Return: nothing
 */
-void run_pro(char **argv, char **argVec, int *id,
-		int *wstatus, int *bol_main)
+void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 {
 	char *envVec[] = {NULL};
 

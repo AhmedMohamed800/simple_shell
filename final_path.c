@@ -1,9 +1,11 @@
 #include "shell.h"
 
 /**
-*
-*
-*
+* final_path - returns the final path
+* @paths_arr: array of paths
+* @index: the indedx to be used in paths_arr
+* @first_argvec: the first element in argVec array
+* Return: a string that contians path to be used in execute
 */
 char *final_path(char **paths_arr, int index, char *first_argvec)
 {
@@ -14,7 +16,7 @@ char *final_path(char **paths_arr, int index, char *first_argvec)
 	ptr = paths_arr[index];
 	final_path = malloc(path_size + argVec_size + 2);
 	if (final_path == NULL)
-		perror("Error"), exit (69);
+		perror("Error"), exit(69);
 	for (i = 0; ptr[i]; i++)
 	{
 		final_path[i] = ptr[i];
