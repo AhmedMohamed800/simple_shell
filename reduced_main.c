@@ -110,10 +110,10 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 			perror("Error"), exit(99);
 	}
 	*nread = getline(line, line_len, stdin);
-	(*line)[*nread - 1] = '\0';
 	if (*nread == EOF)
-                write(STDOUT_FILENO, "\n", 1), exit(1);
-        else if (*nread == -1)
+		write(STDOUT_FILENO, "\n", 1), exit(66);
+	(*line)[*nread - 1] = '\0';
+        if (*nread == -1)
                 perror("Error"), exit(69);
         if (!_strcp(*line, "exit"))
                         exit(99);
@@ -141,9 +141,9 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		}
 		else
 		{
-			write(STDERR_FILENO, ": 1:", 5);
+			write(STDERR_FILENO, ": 1: ", 6);
 			write(STDERR_FILENO, *line, size_of(*line, 0));
-			write(STDERR_FILENO, ":", 2);
+			write(STDERR_FILENO, ": ", 3);
 			write(STDERR_FILENO, "not found\n", 10);
 			exit(99);
 		}
