@@ -88,6 +88,7 @@ char **_str(char **arr, char *line, const char *delim, int check)
 
 /**
 * give_input - reads input from user
+* @envp: input
 * @line: enterd input
 * @line_len: line's length
 * @nread: read the value of line
@@ -113,39 +114,30 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 	if (*nread == EOF)
 		write(STDOUT_FILENO, "\n", 1), exit(66);
 	(*line)[*nread - 1] = '\0';
-        if (*nread == -1)
-                perror("Error"), exit(69);
-        if (!_strcp(*line, "exit"))
-                        exit(99);
-        if (!_strcp(*line, "env"))
-        {
-                while (*envp)
-                {
-                        write(STDOUT_FILENO, *envp, size_of(*envp, 0));
-                        envp++;
-                        write(STDOUT_FILENO, "\n", 1);
-                }
-                *nread = 1;
-        }
-	if (*nread == 1)
-               return (NULL);
+	if (!_strcp(*line, "exit"))
+		exit(99);
+	if (!_strcp(*line, "env"))
+	{
+		while (*envp)
+		{
+			write(STDOUT_FILENO, *envp, size_of(*envp, 0)), envp++;
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		*nread = 1;
+	}
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
 	if (stat(argVec[0], &st) != 0 && *bol_main == 1)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO))
-		{
-			write(STDERR_FILENO, ": ", 3);
-			perror("");
-		}
+			write(STDERR_FILENO, ": ", 3), perror("");
 		else
 		{
 			write(STDERR_FILENO, ": 1: ", 6);
 			write(STDERR_FILENO, *line, size_of(*line, 0));
 			write(STDERR_FILENO, ": ", 3);
-			write(STDERR_FILENO, "not found\n", 10);
-			exit(99);
+			write(STDERR_FILENO, "not found\n", 10), exit(99);
 		}
 	}
 	return (argVec);
@@ -183,7 +175,7 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 }
 
 /**
- * _strcmp - compare 2 strings
+ * _strcp - compare 2 strings
  * @a: first strign
  * @b: sec string
  *
@@ -192,12 +184,12 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 int _strcp(char *a, char *b)
 {
 	int size_a, size_b;
-	
+
 	size_a = size_of(a, 0);
 	size_b = size_of(b, 0);
 	if (size_a != size_b)
 		return (1);
-	while(*a)
+	while (*a)
 	{
 		if (*a != *b)
 			return (1);
