@@ -84,6 +84,7 @@ char **_str(char **arr, char *line, const char *delim, int check)
 		token = strtok(NULL, delim);
 		i++;
 	}
+	
 	arr[i] = NULL;
 	return (arr);
 }
@@ -112,9 +113,15 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		if (write(STDOUT_FILENO, "#cisfun$ ", 9) == -1)
 			perror("Error"), exit(99);
 	}
+	signal(SIGINT, handler);	
+	if (signal(SIGINT, handler) == SIG_ERR)
+		perror("Error");
 	*nread = getline(line, line_len, stdin);
 	if (*nread == EOF)
-		write(STDOUT_FILENO, "\n", 1), exit(66);
+	{
+		*nread = -2;
+		return (NULL);
+	}
 	(*line)[*nread - 1] = '\0';
 	if (*nread == 1)
 		return (NULL);
@@ -130,7 +137,8 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 			write(STDOUT_FILENO, *envp, size_of(*envp, 0)), envp++;
 			write(STDOUT_FILENO, "\n", 1);
 		}
-		*nread = 1;
+		*nread = -3;
+		return (NULL);
 	}
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
@@ -158,7 +166,7 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 * @argVec: arguments to pass in execve
 * Return: nothing
 */
-void run_pro(char **argv, char **argVec, int *id, int *wstatus)
+void run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
 {
 	char *envVec[] = {NULL};
 
@@ -166,7 +174,7 @@ void run_pro(char **argv, char **argVec, int *id, int *wstatus)
 		perror("Error"), exit(97);
 	if (*id == 0)
 	{
-		if (execve(argVec[0], argVec, envVec) == -1)
+		if (execve(use_it, argVec, envVec) == -1)
 		{
 			write(STDERR_FILENO, argv, size_of(*argv, 0));
 			write(STDERR_FILENO, ": 1: ", 6);

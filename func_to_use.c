@@ -35,13 +35,13 @@ char *get_env(char *identi, char **envp)
 		if (_strcmp(identi, envp[n]) == 0)
 		{
 			env_var = envp[n];
-			env_size = size_of(env_var, 0) + 1;
+			env_size = size_of(env_var, 0);
 			for (i = 0; i < env_size; i++)
 			{
 				if (env_var[i] == '=')
 				{
 					value = &env_var[i + 1];
-					value_size = size_of(value, 0);
+					value_size = size_of(value, 0) + 1;
 					final = malloc(value_size + 1);
 					if (final == NULL)
 					{
@@ -67,30 +67,31 @@ char *get_env(char *identi, char **envp)
 size_t size_of(char *str, size_t spaces)
 {
 	size_t i = 0;
-
-	switch (spaces)
+	
+	if (spaces == 0)
 	{
-		case 0:
-			while (*str++)
+		while (*str++)
+			i++;
+	}
+	else if (spaces == 1)
+	{
+		while (*str)
+		{
+			if (*str == ' ')
 				i++;
-			break;
-		case 1:
-			while (*str)
-			{
-				if (*str == ' ')
-					i++;
-				str++;
-			}
-			i += 2;
-			break;
-		case 2:
-			while (*str)
-			{
-				if (*str == ':')
-					i++;
-				str++;
-			}
-			i += 2;
+			str++;
+		}
+		i += 2;
+	}
+	else if (spaces == 2)
+	{
+		while (*str)
+		{
+			if (*str == ':')
+				i++;
+			str++;
+		}
+		i +=2;
 	}
 	return (i);
 }
