@@ -26,5 +26,7 @@ char *final_path(char **paths_arr, int index, char *first_argvec);
 void free_all(char *line, char *paths, char **paths_arr, char **argVec,
 		int line_l, int paths_l, int arr_l, int vec_l);
 void handler(int signal);
+void handle_not_found(char *argVec, int bol_main, char *message,
+		size_t size_of_message, char *line);
 
 #endif

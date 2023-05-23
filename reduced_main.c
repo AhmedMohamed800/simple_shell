@@ -101,14 +101,11 @@ char **_str(char **arr, char *line, const char *delim, int check)
 * @path_index: the index of choosend path
 * Return: nothing
 */
-
-
 char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		char *message, int *bol_main, char **paths, int *path_index)
 {
 	size_t size_of_message = size_of(message, 0);
 	char **argVec = NULL;
-	struct stat st;
 
 	if (isatty(STDIN_FILENO))
 	{
@@ -144,7 +141,26 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 	}
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
-	if (stat(argVec[0], &st) != 0 && *bol_main == 1)
+	handle_not_found(argVec[0], *bol_main, message, size_of_message,
+			*line);
+	return (argVec);
+}
+
+/**
+* handle_not_found - handle errors not found
+* @argVec: first elemtns of argVec array
+* @bol_main: bol_main test
+* @message: the massage to be printed
+* @size_of_message: message's size
+* @line: the line gotten from getline
+* Return: nothing
+*/
+void handle_not_found(char *argVec, int bol_main, char *message,
+		size_t size_of_message, char *line)
+{
+	struct stat st;
+
+	if (stat(argVec, &st) != 0 && bol_main == 1)
 	{
 		write(STDERR_FILENO, message, size_of_message);
 		if (isatty(STDIN_FILENO))
@@ -152,12 +168,11 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		else
 		{
 			write(STDERR_FILENO, ": 1: ", 6);
-			write(STDERR_FILENO, *line, size_of(*line, 0));
+			write(STDERR_FILENO, line, size_of(line, 0));
 			write(STDERR_FILENO, ": ", 3);
 			write(STDERR_FILENO, "not found\n", 10), exit(99);
 		}
 	}
-	return (argVec);
 }
 
 /**

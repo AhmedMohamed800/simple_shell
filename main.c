@@ -7,9 +7,9 @@
  * Return: void
  */
 void handler(int signal);
+char *line = NULL, **argVec = NULL, *use_it = NULL;
+char *paths = NULL, **paths_arr = NULL;
 
-	char *line = NULL, **argVec = NULL, *use_it = NULL;
-	char *paths = NULL, **paths_arr = NULL;
 /**
 * main - simple shell
 * @argc: number of arguments
@@ -42,6 +42,7 @@ int main(int argc, char **argv, char **envp)
 		if (nread == -2)
 		{
 			free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
+			write(1, "\n", 1);
 			break;
 		}
 		if (nread == -3)
