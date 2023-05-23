@@ -1,6 +1,6 @@
 # Simple Shell!
 
-i'm typing this after i have done the project and i want to say this project and want to mention that **this project was really really challenging** im rally proud fromwhat i did <sub>Dinamow</sub> and my friend <sub>Ahmed</sub>
+We're typing this message as memory that we did the project together. We want to say that **this project was really challenging**. We'reproud of what we've done. - Ahmed & Dinamow
 
 ## The main idea
 
@@ -38,9 +38,3 @@ and finally letter ofc is the program smth like `ls`
 we used `**strtok**` to handle the paths and
 if the user gave us the path dirctly it was the ez part we just put it in execve func
 if he gave us the func name or prog he made we just merge all the paths we allocated with his input and check them all if it was in one of them or not, if it was we just pass the path who gave us the true **(yes this path of the program u merged is here)** is no path gave us true we just type the error massage
-
-### How to free memo
-
-i really hate that part and didn't get involved too much in it so lets skip it hahaha
-
-
