@@ -26,15 +26,32 @@ void free_all(char *line, char *paths, char **paths_arr, char **argVec,
 }
 
 /**
-*
-*
-*
+* run_pro - execute a program and handle fork
+* @argv: arguments from user input
+* @id: fork id
+* @wstatus: wait status
+* @argVec: arguments to pass in execve
+* Return: nothing
 */
-void handler(int signal)
+void run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
 {
-	if (signal == SIGINT)
+	char *envVec[] = {NULL};
+
+	if (*id == -1)
+		perror("Error"), exit(97);
+	if (*id == 0)
 	{
-		write(1, "\n", 1);
-		exit (90);
+		if (execve(use_it, argVec, envVec) == -1)
+		{
+			write(STDERR_FILENO, argv, size_of(*argv, 0));
+			write(STDERR_FILENO, ": 1: ", 6);
+			perror(argVec[0]), exit(99);
+		}
+	}
+	else
+	{
+		wait(wstatus);
+		if (!isatty(STDIN_FILENO))
+			exit(10);
 	}
 }

@@ -7,15 +7,18 @@
 * @envp: array of variables
 * Return: 0
 */
+void handler(int signal);
+
+	char *line = NULL, **argVec = NULL, *use_it = NULL;
+	char *paths = NULL, **paths_arr = NULL;
+
 int main(int argc, char **argv, char **envp)
 {
-	char *line = NULL, **argVec = NULL, *use_it = NULL;
 	size_t line_len = 0;
 	int id, wstatus;
 	ssize_t nread;
 	int bol_l, *ptr_bol_l, path_index = 0;
 	struct stat st;
-	char *paths = NULL, **paths_arr = NULL;
 
 	ptr_bol_l = &bol_l;
 	(void) argc;
@@ -62,4 +65,20 @@ int main(int argc, char **argv, char **envp)
 		free_all(line, paths, paths_arr, argVec, 0, 1, 1, 1);
 	}
 	return (0);
+}
+
+/**
+ * handler - hanlder ctrl + c
+ * @signal: input
+ *
+ * Return: void
+ */
+void handler(int signal)
+{
+	if (signal == SIGINT)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		free_all(line, paths, paths_arr, argVec, 1, 1, 1, 0);
+		exit(11);
+	}
 }

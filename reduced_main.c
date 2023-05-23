@@ -101,6 +101,8 @@ char **_str(char **arr, char *line, const char *delim, int check)
 * @path_index: the index of choosend path
 * Return: nothing
 */
+
+
 char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		char *message, int *bol_main, char **paths, int *path_index)
 {
@@ -156,37 +158,6 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		}
 	}
 	return (argVec);
-}
-
-/**
-* run_pro - execute a program and handle fork
-* @argv: arguments from user input
-* @id: fork id
-* @wstatus: wait status
-* @argVec: arguments to pass in execve
-* Return: nothing
-*/
-void run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
-{
-	char *envVec[] = {NULL};
-
-	if (*id == -1)
-		perror("Error"), exit(97);
-	if (*id == 0)
-	{
-		if (execve(use_it, argVec, envVec) == -1)
-		{
-			write(STDERR_FILENO, argv, size_of(*argv, 0));
-			write(STDERR_FILENO, ": 1: ", 6);
-			perror(argVec[0]), exit(99);
-		}
-	}
-	else
-	{
-		wait(wstatus);
-		if (!isatty(STDIN_FILENO))
-			exit(10);
-	}
 }
 
 /**
