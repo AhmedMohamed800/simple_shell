@@ -16,7 +16,8 @@ int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 	struct stat st;
 	char *final_path = NULL;
 
-	if (argVec_first[0] == '/' || argVec_first[0] == '.')
+	if (argVec_first[0] == '/' ||
+			(argVec_first[0] == '.' && argVec_first[1] == '/'))
 		return (1);
 	while (paths_arr[i] != NULL)
 	{
@@ -40,6 +41,7 @@ int handle_path(char *argVec_first, char **paths_arr, int *path_index)
 		if (stat(final_path, &st) == 0)
 		{
 			bol_l = 0;
+			free(final_path);
 			break;
 		}
 		i++;
@@ -114,8 +116,13 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 	if (*nread == EOF)
 		write(STDOUT_FILENO, "\n", 1), exit(66);
 	(*line)[*nread - 1] = '\0';
+	if (*nread == 1)
+		return (NULL);
 	if (!_strcp(*line, "exit"))
-		exit(99);
+	{
+		*nread = -2;
+		return (NULL);
+	}
 	if (!_strcp(*line, "env"))
 	{
 		while (*envp)
