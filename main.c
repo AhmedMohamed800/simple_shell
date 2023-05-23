@@ -1,16 +1,22 @@
 #include "shell.h"
 
 /**
+ * handler - hanlder ctrl + c
+ * @signal: input
+ *
+ * Return: void
+ */
+void handler(int signal);
+
+	char *line = NULL, **argVec = NULL, *use_it = NULL;
+	char *paths = NULL, **paths_arr = NULL;
+/**
 * main - simple shell
 * @argc: number of arguments
 * @argv: arguments
 * @envp: array of variables
 * Return: 0
 */
-void handler(int signal);
-
-	char *line = NULL, **argVec = NULL, *use_it = NULL;
-	char *paths = NULL, **paths_arr = NULL;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -47,7 +53,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			free_all(line, paths, paths_arr, argVec, 0, 1, 1, 1);
 			continue;
-		} 
+		}
 		if (*ptr_bol_l == 0)
 		{
 			use_it = final_path(paths_arr, path_index, argVec[0]);

@@ -67,7 +67,7 @@ char *get_env(char *identi, char **envp)
 size_t size_of(char *str, size_t spaces)
 {
 	size_t i = 0;
-	
+
 	if (spaces == 0)
 	{
 		while (*str++)
@@ -91,7 +91,7 @@ size_t size_of(char *str, size_t spaces)
 				i++;
 			str++;
 		}
-		i +=2;
+		i += 2;
 	}
 	return (i);
 }

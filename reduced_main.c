@@ -84,7 +84,7 @@ char **_str(char **arr, char *line, const char *delim, int check)
 		token = strtok(NULL, delim);
 		i++;
 	}
-	
+
 	arr[i] = NULL;
 	return (arr);
 }
@@ -115,7 +115,7 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		if (write(STDOUT_FILENO, "#cisfun$ ", 9) == -1)
 			perror("Error"), exit(99);
 	}
-	signal(SIGINT, handler);	
+	signal(SIGINT, handler);
 	if (signal(SIGINT, handler) == SIG_ERR)
 		perror("Error");
 	*nread = getline(line, line_len, stdin);

@@ -29,6 +29,7 @@ void free_all(char *line, char *paths, char **paths_arr, char **argVec,
 * run_pro - execute a program and handle fork
 * @argv: arguments from user input
 * @id: fork id
+* @use_it: input
 * @wstatus: wait status
 * @argVec: arguments to pass in execve
 * Return: nothing
