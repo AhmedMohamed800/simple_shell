@@ -66,7 +66,12 @@ int main(int argc, char **argv, char **envp)
 		}
 		else
 		{
-			run_pro(argv, argVec, argVec[0], &id, &wstatus);
+			nread = run_pro(argv, argVec, argVec[0], &id, &wstatus);
+			if (nread == -2)
+			{
+				free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
+		       		break;
+			}
 		}
 		free_all(line, paths, paths_arr, argVec, 0, 1, 1, 1);
 	}
