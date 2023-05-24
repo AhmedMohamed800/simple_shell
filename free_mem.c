@@ -54,7 +54,7 @@ ssize_t run_pro(char **argv, char **argVec, char *use_it,
 	{
 		wait(wstatus);
 		if (!isatty(STDIN_FILENO))
-			return (-2);
+			return (-9);
 	}
 	return (0);
 }

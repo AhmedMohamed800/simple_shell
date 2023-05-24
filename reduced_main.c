@@ -167,11 +167,11 @@ size_t handle_not_found(char *argVec, int bol_main, char *message,
 			write(STDERR_FILENO, ": ", 3), perror("");
 		else
 		{
-			write(STDERR_FILENO, ": 1: ", 6);
+			write(STDERR_FILENO, ": 1: ", 5);
 			write(STDERR_FILENO, line, size_of(line, 0));
-			write(STDERR_FILENO, ": ", 3);
+			write(STDERR_FILENO, ": ", 2);
 			write(STDERR_FILENO, "not found\n", 10);
-			return (-2);
+			return (-9);
 		}
 	}
 	return (0);

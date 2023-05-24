@@ -39,6 +39,11 @@ int main(int argc, char **argv, char **envp)
 			free_all(line, paths, paths_arr, argVec, 0, 1, 1, 0);
 			continue;
 		}
+		if (nread == -9)
+		{
+			free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
+			exit(127);
+		}
 		if (nread == -2)
 		{
 			free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
@@ -67,11 +72,6 @@ int main(int argc, char **argv, char **envp)
 		else
 		{
 			nread = run_pro(argv, argVec, argVec[0], &id, &wstatus);
-			if (nread == -2)
-			{
-				free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
-				break;
-			}
 		}
 		free_all(line, paths, paths_arr, argVec, 0, 1, 1, 1);
 	}
