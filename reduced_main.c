@@ -141,7 +141,7 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 	}
 	argVec = _str(argVec, *line, " ", 0);
 	*bol_main = handle_path(argVec[0], paths, path_index);
-	handle_not_found(argVec[0], *bol_main, message, size_of_message,
+	*nread = handle_not_found(argVec[0], *bol_main, message, size_of_message,
 			*line);
 	return (argVec);
 }
@@ -155,7 +155,7 @@ char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 * @line: the line gotten from getline
 * Return: nothing
 */
-void handle_not_found(char *argVec, int bol_main, char *message,
+size_t handle_not_found(char *argVec, int bol_main, char *message,
 		size_t size_of_message, char *line)
 {
 	struct stat st;
@@ -170,9 +170,11 @@ void handle_not_found(char *argVec, int bol_main, char *message,
 			write(STDERR_FILENO, ": 1: ", 6);
 			write(STDERR_FILENO, line, size_of(line, 0));
 			write(STDERR_FILENO, ": ", 3);
-			write(STDERR_FILENO, "not found\n", 10), exit(99);
+			write(STDERR_FILENO, "not found\n", 10);
+			return (-2);
 		}
 	}
+	return (0);
 }
 
 /**

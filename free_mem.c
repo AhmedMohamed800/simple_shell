@@ -34,7 +34,8 @@ void free_all(char *line, char *paths, char **paths_arr, char **argVec,
 * @argVec: arguments to pass in execve
 * Return: nothing
 */
-ssize_t run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
+ssize_t run_pro(char **argv, char **argVec, char *use_it,
+		int *id, int *wstatus)
 {
 	char *envVec[] = {NULL};
 
@@ -53,7 +54,7 @@ ssize_t run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
 	{
 		wait(wstatus);
 		if (!isatty(STDIN_FILENO))
-			return(-2);
+			return (-2);
 	}
 	return (0);
 }

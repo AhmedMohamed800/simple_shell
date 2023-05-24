@@ -15,7 +15,8 @@ int _strcp(char *a, char *b);
 char **give_input(char **envp, char **line, size_t *line_len, ssize_t *nread,
 		char *message, int *bol_main,
 		char **paths, int *path_index);
-ssize_t run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus);
+ssize_t run_pro(char **argv, char **argVec, char *use_it,
+		int *id, int *wstatus);
 size_t size_of(char *str, size_t spaces);
 char *_strcpy(char *dest, char *src);
 void _free_array(char **arr);
@@ -26,7 +27,7 @@ char *final_path(char **paths_arr, int index, char *first_argvec);
 void free_all(char *line, char *paths, char **paths_arr, char **argVec,
 		int line_l, int paths_l, int arr_l, int vec_l);
 void handler(int signal);
-void handle_not_found(char *argVec, int bol_main, char *message,
-		size_t size_of_message, char *line);
+size_t handle_not_found(char *argVec, int bol_main,
+		char *message, size_t size_of_message, char *line);
 
 #endif
