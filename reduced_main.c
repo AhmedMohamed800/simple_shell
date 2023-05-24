@@ -186,18 +186,20 @@ size_t handle_not_found(char *argVec, int bol_main, char *message,
  */
 int _strcp(char *a, char *b)
 {
-	int size_a, size_b;
-
-	size_a = size_of(a, 0);
+	int size_a, size_b, size = 0;
+	
+	while (*a == ' ')
+		a++;
 	size_b = size_of(b, 0);
-	if (size_a != size_b)
-		return (1);
 	while (*a)
 	{
 		if (*a != *b)
 			return (1);
 		a++;
 		b++;
+		size++;
+		if (size == size_b)
+			return (0);
 	}
 	return (0);
 }
