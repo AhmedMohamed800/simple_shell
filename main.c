@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **envp)
 		if (nread == -2)
 		{
 			free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
-			break;
+			exit(0);
 		}
 		if (nread == -3)
 		{
@@ -70,7 +70,7 @@ int main(int argc, char **argv, char **envp)
 			if (nread == -2)
 			{
 				free_all(line, paths, paths_arr, argVec, 1, 1, 1, 1);
-		       		break;
+				break;
 			}
 		}
 		free_all(line, paths, paths_arr, argVec, 0, 1, 1, 1);
