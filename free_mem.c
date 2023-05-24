@@ -53,6 +53,6 @@ void run_pro(char **argv, char **argVec, char *use_it, int *id, int *wstatus)
 	{
 		wait(wstatus);
 		if (!isatty(STDIN_FILENO))
-			exit(10);
+			exit(EXIT_SUCCESS);
 	}
 }
