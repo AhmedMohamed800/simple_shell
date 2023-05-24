@@ -186,7 +186,7 @@ size_t handle_not_found(char *argVec, int bol_main, char *message,
  */
 int _strcp(char *a, char *b)
 {
-	int size_a, size_b, size = 0;
+	int size_b, size = 0;
 	
 	while (*a == ' ')
 		a++;
